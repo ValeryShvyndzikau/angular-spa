@@ -1,22 +1,24 @@
 {
-    "name": "pxts",
-    "version": "0.0.1",
-    "private": true,
-    "scripts": {
-      "start": "node app"
-    },
-    "dependencies": {
-      "express": "3.0.x",
-      "jade": ">= 0.0.1",
-      "mongoose": "4.2.x"
-    },
-    "devDependencies": {
-      "mocha": "1.7.x",
-      "should": "1.2.x",
-      "supertest": "0.4.x"
-    },
-    "engines": {
-      "node": "0.16.x",
-      "npm": "3.3.x"
-    }
+  "name": "pxts",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "express": "3.0.x",
+    "jade": ">= 0.0.1",
+    "mongoose": "4.2.x"
+  },
+  "devDependencies": {
+    "mocha": "1.7.x",
+    "should": "1.2.x",
+    "supertest": "0.4.x",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.1"
+  },
+  "engines": {
+    "node": "0.16.x",
+    "npm": "3.3.x"
+  }
 }
