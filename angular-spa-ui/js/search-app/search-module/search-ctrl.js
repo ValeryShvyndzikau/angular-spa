@@ -3,7 +3,7 @@
  module.exports = function () {
 	//routes?
 	this.greeting = 'Hello! this is search controller!';
-	alert(this.greeting);
+	//alert(this.greeting);
 
 /*
 	var searchRouter = angular.module('searchRouter', ['ui.router']);
