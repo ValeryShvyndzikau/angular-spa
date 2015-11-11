@@ -13,7 +13,7 @@
     "webpack": "^1.12.3"
   },
   "scripts": {
-    "dev": "set NODE_ENV=development&& webpack",
+    "dev": "set NODE_ENV=Development&& webpack",
     "prod": "webpack"
   }
 }

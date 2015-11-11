@@ -1,18 +1,12 @@
 block content
 body(id="app")
 ul(class="nav navbar-nav")
+	li(ui-sref="/") 
+		a Main
 	li(ui-sref="search") 
 		a Модуль: 'Search'
-	li(ui-sref="search2") 
-		a Модуль: 'Search' - search results
-	li(ui-sref="search.advanced") 
-		a Модуль: 'Search' - submodule 'Advanced search'
-	li(ui-sref="search.cart") 
-		a Модуль: 'Cart'
-	li(ui-sref="search.tags") 
-		a Модуль: 'Tags'
  
-<div ui-view></div>
+<div ui-view="main"></div>
 block scripts
 script.
 	var GLOBAL_USER_ID = '#{userId}';
