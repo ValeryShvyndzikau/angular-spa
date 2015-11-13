@@ -1,6 +1,6 @@
-module.exports = function(app) {
-  // Defining routes
-  var routes = require('./routes.js');
+module.exports = function (app) {
+    // Defining routes
+    var routes = require('./routes.js');
 
-  app.get('/admin', routes.getAdminHome);
+    app.get('/admin', routes.getAdminHome);
 }

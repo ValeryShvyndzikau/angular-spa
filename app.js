@@ -19,40 +19,41 @@ mongoose.connect('mongodb://admin:admin@ds047504.mongolab.com:47504/sandbox');
 
 // Configuration
 app.configure(function () {
-  app.locals.basedir = __dirname;
+    app.locals.basedir = __dirname;
 
-  app.set('views', __dirname + '/angular-spa-ui');
-  app.set('view engine', 'jade');
-  app.set('view options', {
-    layout: true
-  });
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/angular-spa-ui'));
+    app.set('views', __dirname + '/angular-spa-ui');
+    app.set('view engine', 'jade');
+    app.set('view options', {
+        layout: true
+    });
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(app.router);
+    app.use(express.static(__dirname + '/angular-spa-ui'));
 
-  app.locals.basedir = path.join(app.get('views'));
+    app.locals.basedir = path.join(app.get('views'));
 
-  app.envSettings = {
-    environmentType: node_env,
-    user: node_user_id
-  };
+    app.envSettings = {
+        environmentType: node_env,
+        user: node_user_id
+    };
 });
 
 app.configure('development', function () {
-  app.use(express.errorHandler( {dumpExceptions: true, showStack: true} ));
+    app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
 
 app.configure('production', function () {
-  app.use(express.errorHandler());
+    app.use(express.errorHandler());
 });
 
 app.listen(port, function () {
-  console.log("Express server listening on port %d in %s mode", port, app.settings.env);
+    console.log("Express server listening on port %d in %s mode", port, app.settings.env);
 });
 
 // Load entities
-var Book = require('./rest-modules/book/')(app, mongoose);
+var Article = require('./rest-modules/article/')(app, mongoose);
+var Publication = require('./rest-modules/publication/')(app, mongoose);
 var User = require('./rest-modules/user/')(app, mongoose);
 var Role = require('./rest-modules/role/')(app, mongoose);
 var Index = require('./rest-modules/index/')(app);

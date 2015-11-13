@@ -1,17 +1,22 @@
 module.exports = function (app, mongoose) {
 
-    var User = new mongoose.Schema({
-        name: {
-            type: String,
-            mandatory: true
+    var Article = new mongoose.Schema({
+        title: {
+            type: String
         },
-        password: {
-            type: String,
-            mandatory: true
+        description: {
+            type: String
         },
-        email: {
+        content: {
             type: String,
-            mandatory: true
+        },
+        language: {
+            type: String,
+            default: 'en',
+            enum: ['en', 'ru']
+        },
+        author: {
+            type: String
         },
         created: {
             type: Date,
@@ -27,5 +32,5 @@ module.exports = function (app, mongoose) {
         }
     });
 
-    return mongoose.model('User', User);
+    return mongoose.model('Article', Article);
 }
