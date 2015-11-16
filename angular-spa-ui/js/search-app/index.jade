@@ -1,5 +1,5 @@
 block content
-body(id="app")
+body(id="app" ng-controller="searchAppCtrl")
     ul(class="nav navbar-nav")
         li
             a(ui-sref="search") Модуль: 'Search'
@@ -7,6 +7,8 @@ body(id="app")
             a(ui-sref="cart") Модуль: 'Cart'
         li
             a(ui-sref="tags") Модуль: 'Tags'
+        li
+            a(ui-sref="error") Модуль: 'Error'
 
 <div ui-view></div>
 block scripts
