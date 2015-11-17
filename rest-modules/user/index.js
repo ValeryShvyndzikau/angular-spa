@@ -51,7 +51,7 @@ module.exports = function (app, mongoose, api) {
         return model.findById(id, function (error, data) {
             if (!error) {
                 // Users found
-                return response.send(api.generateResponseObject(operationName, 'ok', null));
+                return response.send(api.generateResponseObject(operationName, 'ok', null, data));
             }
 
             // Error on searching
