@@ -31,15 +31,32 @@ function initApp() {
     
 searchApp.factory('PreloadRequest', function($http, $q) {
     
-    function getData(method , url, dataType){
+    function getData(method , url){
+//        console.log(url);
+//        return $q(function(resolve, reject) {
+//            $http({method: method, url:url})
+//            .success(function(data){
+//                dataParse(dataType, data);
+//                console.log(data);
+//                resolve(data);
+//    
+//            })
+//            .error(function(data, status, headers, config){
+//            console.log('Error');
+//                reject(status);
+//            });
+//            return deferred.promise;
+//        });
+        console.log(url);        
         var deferred = $q.defer();
-        
+
         $http({method: method, url:url})
-            .success(function(data){
-                dataParse(dataType, data);
+            .success(function(data){     
+                console.log(data);
                 deferred.resolve(data);
             })
             .error(function(data, status, headers, config){
+            console.log('Error');
                 deferred.reject(status);
             });
         
@@ -47,6 +64,7 @@ searchApp.factory('PreloadRequest', function($http, $q) {
     }
  
     function dataParse(dataType, data){
+        console.log(dataType);
         switch (dataType){
             case 'userData': {
                 console.log(data);
@@ -57,13 +75,13 @@ searchApp.factory('PreloadRequest', function($http, $q) {
                 break;
             }
             case 'userRole': {
-                console.log('Get role response');
+               //console.log('Get role response');
                 responsePromises.push(data);
                 console.log(data);
                 break;
             }   
             case 'userToken': {
-                console.log('Get token responce');
+                //console.log('Get token responce');
                 responsePromises.push(data);
                 console.log(data);
                 USER_TOKEN = data.data.token;
@@ -72,7 +90,7 @@ searchApp.factory('PreloadRequest', function($http, $q) {
             }
             case 'userValidate': {
                 USER_VALIDATE = data.data.result;
-                console.log(USER_VALIDATE);
+                console.log(data);
                 break;
             }
                 
@@ -80,47 +98,50 @@ searchApp.factory('PreloadRequest', function($http, $q) {
     }
     
     function getRTList () {
-        var rPromise = getData(GET_METHOD,GET_ROLE, 'userRole');
-        var tPromise = getData(GET_METHOD,GET_TOKEN, 'userToken');
+        var rPromise = getRole();//getData(GET_METHOD,GET_ROLE, 'userRole');
+        var tPromise = getToken();//getData(GET_METHOD,GET_TOKEN, 'userToken');
         return new Array(rPromise,tPromise);        
     };
-    
+        
     return {
         getRTList : getRTList,
-        getData : getData
+        getData : getData,
+        dataParse : dataParse
     }
 });    
     
-searchApp.controller('searchAppCtrl', function searchAppCtrl($scope, PreloadRequest, $location, $q){   
+searchApp.controller('searchAppCtrl', function searchAppCtrl($scope, PreloadRequest, $location, $q, $http){   
     console.log('searchApp controller');
-    var getUser = PreloadRequest.getData(GET_METHOD, GET_USER, 'userData');
-        
-    getUser.then( 
-        function(data){
+    
+    var getUser = $http({method: GET_METHOD, url:GET_USER})    //PreloadRequest.getData(GET_METHOD, GET_USER);
+    //var getRole = PreloadRequest.getData(GET_METHOD, GET_ROLE, 'userRole');
+    //var getToken = PreloadRequest.getData(GET_METHOD, GET_TOKEN, 'userToken');
+    //var getValidation = PreloadRequest.getData(GET_METHOD, GET_VALIDATION, 'userValidation');
+    console.log('Start promises');
+    getUser
+        .then( function(data) {
+            PreloadRequest.dataParse('userData', data);
+             $http({method: GET_METHOD, url:GET_ROLE})    
+             //PreloadRequest.getData(GET_METHOD, GET_ROLE)
+            })
+        .then(
+            function(data){
+                PreloadRequest.dataParse('userRole', data);
+                $http({method: GET_METHOD, url:GET_TOKEN})    
+                //PreloadRequest.getData(GET_METHOD, GET_TOKEN);
+            })
+        .then(
+            function(data){
+                PreloadRequest.dataParse('userToken', data);
+                $http({method: GET_METHOD, url:GET_VALIDATION})    
+                //PreloadRequest.getData(GET_METHOD, GET_VALIDATION);    
+            })
+        .then(function(data){
             console.log(data);
-            var promisesList = PreloadRequest.getRTList();
-            console.log(promisesList);
-            $q.all(promisesList)
-            .then( 
-                function(values){
-                    console.log(values);
-                    console.log(responsePromises);
-                    PreloadRequest.getData(GET_METHOD, GET_VALIDATION, 'userValidate');  
-                },                
-                function(err){
-                    
-                }
-            ).then(
-                function(data){
-                    console.log(data);
-                },
-                function(err){
-                    
-                }) 
-        },
-        function(err){
-            console.log(err);
-        });
+            PreloadRequest.dataParse('userValidate', data);
+    })
+     
+     
                     
     
 
