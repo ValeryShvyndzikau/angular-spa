@@ -2,6 +2,8 @@
  * Module dependencies.
  */
 
+var config = require('./config.json');
+
 var env_dev = 'Development';
 var env_prod = 'Production';
 
@@ -12,16 +14,16 @@ var express = require('express');
 var path = require('path');
 var app = express();
 var mongoose = require('mongoose');
-var port = 3000;
 
 // Init mongoose
-mongoose.connect('mongodb://admin:admin@ds047504.mongolab.com:47504/sandbox');
+mongoose.connect('mongodb://' + config.mongoose.user + ':' + config.mongoose.pass +
+    '@' + config.mongoose.host + ':' + config.mongoose.port + '/' + config.mongoose.database);
 
 // Configuration
 app.configure(function () {
     app.locals.basedir = __dirname;
 
-    app.set('views', __dirname + '/angular-spa-ui');
+    app.set('views', __dirname + '/' + config.angular.rootDirectory);
     app.set('view engine', 'jade');
     app.set('view options', {
         layout: true
@@ -29,7 +31,7 @@ app.configure(function () {
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(app.router);
-    app.use(express.static(__dirname + '/angular-spa-ui'));
+    app.use(express.static(__dirname + '/' + config.angular.rootDirectory));
 
     app.locals.basedir = path.join(app.get('views'));
 
@@ -47,14 +49,20 @@ app.configure('production', function () {
     app.use(express.errorHandler());
 });
 
-app.listen(port, function () {
-    console.log("Express server listening on port %d in %s mode", port, app.settings.env);
+app.listen(config.application.port, function () {
+    console.log("Express server listening on port %d in %s mode", config.application.port, app.settings.env);
 });
 
-// Load entities
-var Article = require('./rest-modules/article/')(app, mongoose);
-var Publication = require('./rest-modules/publication/')(app, mongoose);
-var User = require('./rest-modules/user/')(app, mongoose);
-var Role = require('./rest-modules/role/')(app, mongoose);
-var Index = require('./rest-modules/index/')(app);
-var Admin = require('./rest-modules/admin/')(app);
+// Init RestModules loader
+var API = new require('./rest-modules/api')(app, mongoose);
+
+API.initRestModules([
+    'article',
+    'publication',
+    'tags',
+    'user',
+    'role',
+    'index',
+    'admin',
+    'search'
+]);

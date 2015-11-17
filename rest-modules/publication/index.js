@@ -1,5 +1,6 @@
-module.exports = function (app, mongoose) {
+module.exports = function (app, mongoose, api) {
 
+    var api = api;
     var model = require('./Publication.js')(app, mongoose);
 
     // Routes list
@@ -47,14 +48,14 @@ module.exports = function (app, mongoose) {
             }
         }
 
-        return response.send({
-            operation: 'create random publications',
-            status: (publicationsCreated > 0) ? 'ok' : 'error',
-            error: (publicationsCreated > 0) ? null : 'No publication has been created',
-            data: {
-                publicationsCreated: publicationsCreated
-            }
-        });
+        return response.send(
+            api.generateResponseObject(
+                'create random publications',
+                (publicationsCreated > 0) ? 'ok' : 'error',
+                (publicationsCreated > 0) ? null : 'No publication has been created',
+                { publicationsCreated: publicationsCreated }
+            )
+        );
     }
 
     // Helper functions

@@ -1,5 +1,6 @@
-module.exports = function (app, mongoose) {
+module.exports = function (app, mongoose, api) {
 
+    var api = api;
     var model = require('./Role.js')(app, mongoose);
 
     // Get user permissions
@@ -7,22 +8,12 @@ module.exports = function (app, mongoose) {
         var operationName = 'get user permissions';
         var userId = request.params.userId;
 
-        return model.findOne({userId: userId}, function (error, data) {
+        return model.findOne({ userId: userId }, function (error, data) {
             if (error) {
-                return response.send({
-                    operation: operationName,
-                    status: 'error',
-                    error: error,
-                    data: {}
-                });
+                return response.send(api.generateResponseObject(operationName, 'error', error));
             }
 
-            return response.send({
-                operation: operationName,
-                status: 'ok',
-                error: null,
-                data: data.permissions
-            });
+            return response.send(api.generateResponseObject(operationName, 'ok', null, data.permissions));
         });
     });
 
@@ -46,31 +37,16 @@ module.exports = function (app, mongoose) {
 
                 role.save(function (error) {
                     if (!error) {
-                        return response.send({
-                            operation: operationName,
-                            status: 'ok',
-                            error: null,
-                            data: role
-                        });
+                        return response.send(api.generateResponseObject(operationName, 'ok', null, role));
                     }
 
-                    return response.send({
-                        operation: operationName,
-                        status: 'error',
-                        error: error,
-                        data: {}
-                    });
+                    return response.send(api.generateResponseObject(operationName, 'error', error));
                 });
             }
             else {
                 // Update permission
                 if (request.body.permissions == undefined) {
-                    return response.send({
-                        operation: operationName,
-                        status: 'error',
-                        error: 'You did not specify permissions',
-                        data: data
-                    })
+                    return response.send(api.generateResponseObject(operationName, 'error', 'You did not specify permissions', data));
                 }
 
                 if (roleName != null) {
@@ -81,21 +57,11 @@ module.exports = function (app, mongoose) {
 
                 data.save(function (error) {
                     if (!error) {
-                        return response.send({
-                            operation: operationName,
-                            status: 'ok',
-                            error: null,
-                            data: data
-                        });
+                        return response.send(api.generateResponseObject(operationName, 'ok', null, data));
                     }
 
-                    return response.send({
-                        operation: operationName,
-                        status: 'error',
-                        error: error,
-                        data: {}
-                    });
-                })
+                    return response.send(api.generateResponseObject(operationName, 'error', error));
+                });
             }
         });
     });
