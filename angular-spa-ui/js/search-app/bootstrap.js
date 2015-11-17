@@ -6,15 +6,12 @@ module.exports = function(searchApp){
     require('./search-module');
     require('./cart-module');
     require('./tags-module');
-    var errors = require('./errors');
     
-    initApp();
-
     searchApp.factory('Promises', function($q, $http){
 
         function getAsyncData(method, url) {
             var deferred = $q.defer();
-
+            
             $http({ method: method, url: url })
                 .success(function(data){
                     data.url = url;
@@ -36,11 +33,11 @@ module.exports = function(searchApp){
             var deferred = $q.defer();
             $q.all(promiseList)
                 .then(
-                    function(values){
+                    function(values) {
                         deferred.resolve(values)
                     },
-                    function(err){
-                        deferred.reject(err);
+                    function(data, status) {
+                        deferred.reject(data, status);
                     }
                 );
             
@@ -53,8 +50,7 @@ module.exports = function(searchApp){
         };
     });
     
-    searchApp.controller('mainCtrl', function($location, Promises, $state) {
-
+    searchApp.controller('mainCtrl', ['$scope', 'Promises',  function($scope, Promises) {                              
         // Promises requests responce
     var responsePromises    = new Array(),
         getMethod           = 'GET',
@@ -120,15 +116,16 @@ module.exports = function(searchApp){
             function(data) {
                 console.log(data);
                 userValidate = data.data.result;
-                console.log(userValidate);
-                // all good
+                console.log(userValidate);                
+                
+                // all good                
             },
             function(data, status) {
                 //error function
             }
         );
 
-});
+}]);
     
     function initApp(){
     
@@ -143,6 +140,8 @@ module.exports = function(searchApp){
         });
         
     return searchApp;
-    }
+    };
     
-}
+    return initApp();
+    
+};
