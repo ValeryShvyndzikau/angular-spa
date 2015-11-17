@@ -6,29 +6,16 @@ module.exports = function(searchApp){
     require('./search-module');
     require('./cart-module');
     require('./tags-module');
-
-// Promises requests responce
-var responsePromises    = new Array(),
-    GET_METHOD          = 'GET',
-    POST_METHOD         = 'POST',
-    PUT_METHOD          = 'PUT',
-    DELETE_METHOD       = 'DELETE',
-    GET_USER            = '/user/' + GLOBAL_USER_ID,
-    GET_ROLE            = '/role/',
-    GET_TOKEN           = '/user-token/',
-    GET_VALIDATE        = '/user-validate/',
-    USER_ID,
-    USER_TOKEN,
-    USER_VALIDATE;
-
+    var errors = require('./errors');
+    
     initApp();
 
     searchApp.factory('Promises', function($q, $http){
 
-        function getAsyncData( method, url){
+        function getAsyncData(method, url) {
             var deferred = $q.defer();
 
-            $http({method: method, url: url})
+            $http({ method: method, url: url })
                 .success(function(data){
                     data.url = url;
                     deferred.resolve(data);
@@ -38,100 +25,124 @@ var responsePromises    = new Array(),
                 });
 
             return deferred.promise;
-        }
+        };
 
-        function getALL(method){
+        function getALL(method) {
             var promiseList = new Array();
-            for (var i=1; i<arguments.length; i++){
+            for ( var i=1; i<arguments.length; i++ ) {
                 promiseList.push(getAsyncData(method, arguments[i]))
             };
 
             var deferred = $q.defer();
-            $q.all(promiseList).then(
-                function(values){
-                    deferred.resolve(values)
-                },
-                function(err){
-                    deferred.reject(err);
-                }
-            );
+            $q.all(promiseList)
+                .then(
+                    function(values){
+                        deferred.resolve(values)
+                    },
+                    function(err){
+                        deferred.reject(err);
+                    }
+                );
+            
             return deferred.promise;
-        }
+        };
 
         return {
             getAsyncData: getAsyncData,
             getAll : getALL
-        }
-    })
+        };
+    });
     
-    searchApp.controller('mainCtrl', function($location, Promises){
+    searchApp.controller('mainCtrl', function($location, Promises, $state) {
 
-    function initUserData(data){
+        // Promises requests responce
+    var responsePromises    = new Array(),
+        getMethod           = 'GET',
+        postMethod          = 'POST',
+        putMethod           = 'PUT',
+        putMethod           = 'DELETE',
+        getUserPath         = '/user/' + GLOBAL_USER_ID,
+        getRolePath         = '/role/',
+        getTokenPath        = '/user-token/',
+        getValidatePath     = '/user-validate/',
+        userId,
+        userToken,
+        userValidate,
+        inited              = false,
+        initDone            = false;
+    
+    function initUserData(data) {
         console.log(data);
         responsePromises.push(data);
-        USER_ID = data.data._id;
-        console.log(USER_ID);
-        GET_ROLE = GET_ROLE + USER_ID;
-        GET_TOKEN = GET_TOKEN + USER_ID;
+        userId = data.data._id;
+        console.log(userId);
+        getRolePath = getRolePath + userId;
+        getTokenPath = getTokenPath + userId;
     };
-
-    function initRTData(data){
+        
+    function initRTData(data) {
         for (var i=0; i< data.length; i++){
             responsePromises.push(data[i]);
         }
         getToken(data);
-        function getToken(data){
+        
+        function getToken(data) {
             for (var i=0; i<data.length; i++){
-                if (data[i].url && (data[i].url === GET_TOKEN)){
-                    USER_TOKEN = data[i].data.token;
+                if (data[i].url && (data[i].url === getTokenPath)){
+                    userToken = data[i].data.token;
                 }
             }
         }
-        GET_VALIDATE = GET_VALIDATE + USER_ID + '/' + USER_TOKEN;
+        
+        getValidatePath = getValidatePath + userId + '/' + userToken;
         console.log(data);
-        console.log(USER_TOKEN);
+        console.log(userToken);
     };
 
-    Promises.getAsyncData(GET_METHOD, GET_USER)
+    Promises.getAsyncData(getMethod, getUserPath)
         .then(
-            function(data){
+            function(data) {
                 initUserData(data);
-                return Promises.getAll(GET_METHOD, GET_ROLE, GET_TOKEN )
+                return Promises.getAll(getMethod, getRolePath, getTokenPath )
+            },
+            function(data, status) {
+                //error function
             })
         .then(
-            function(data){
+            function(data) {
                 initRTData(data);
-                return Promises.getAsyncData(GET_METHOD, GET_VALIDATE);
+                return Promises.getAsyncData(getMethod, getValidatePath);
+            },
+            function(data, status) {
+                //error function
             })
         .then(
-            function(data){
+            function(data) {
                 console.log(data);
-                USER_VALIDATE = data.data.result;
-                console.log(USER_VALIDATE);
-                if (USER_VALIDATE){
-
-                } else {
-
-                }
+                userValidate = data.data.result;
+                console.log(userValidate);
+                // all good
+            },
+            function(data, status) {
+                //error function
             }
-    )
+        );
 
-})
+});
     
     function initApp(){
     
-        angular.element(document).ready(function () {
-
-            searchApp
-                .config(function ($stateProvider, $urlRouterProvider) {
-                    $urlRouterProvider.otherwise('search');
-                })
-                .run();
+    angular.element(document).ready(function () {
+        searchApp
+            .config(function ($stateProvider, $urlRouterProvider) {
+                $urlRouterProvider.otherwise('search');
+            })
+            .run();
 
             angular.bootstrap(document, ['searchApp']);
-
         });
+        
     return searchApp;
-}
+    }
     
 }
