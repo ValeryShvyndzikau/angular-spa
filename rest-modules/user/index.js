@@ -4,8 +4,9 @@
  * @returns {{getModel: getModel}}
  */
 
-module.exports = function (app, mongoose) {
+module.exports = function (app, mongoose, api) {
 
+    var api = api;
     var model = require('./User.js')(app, mongoose);
 
     // Returns user by unique identifier
@@ -35,21 +36,11 @@ module.exports = function (app, mongoose) {
         return model.find(function (error, data) {
             if (!error) {
                 // User found
-                return response.send({
-                    operation: operationName,
-                    status: 'ok',
-                    error: null,
-                    data: data
-                });
+                return response.send(api.generateResponseObject(operationName, 'ok', null, data));
             }
 
             // Error on searching
-            return response.send({
-                operation: operationName,
-                status: 'error',
-                error: error,
-                data: {}
-            });
+            return response.send(api.generateResponseObject(operationName, 'error', error))
         });
     }
 
@@ -60,21 +51,11 @@ module.exports = function (app, mongoose) {
         return model.findById(id, function (error, data) {
             if (!error) {
                 // Users found
-                return response.send({
-                    operation: operationName,
-                    status: 'ok',
-                    error: null,
-                    data: data
-                });
+                return response.send(api.generateResponseObject(operationName, 'ok', null));
             }
 
             // Error on searching
-            return response.send({
-                operation: operationName,
-                status: 'error',
-                error: error,
-                data: {}
-            });
+            return response.send(api.generateResponseObject(operationName, 'error', error));
         });
     }
 
@@ -98,12 +79,7 @@ module.exports = function (app, mongoose) {
 
                     // If mandatory field is empty return error
                     if (request.body[treeItemName].length == 0) {
-                        return response.send({
-                            operation: operationName,
-                            status: 'error',
-                            error: 'Field ' + treeItemName + ' is mandatory',
-                            data: {}
-                        });
+                        return response.send(api.generateResponseObject(operationName, 'error', 'Field ' + treeItemName + ' is mandatory'));
                     }
                 }
 
@@ -116,21 +92,11 @@ module.exports = function (app, mongoose) {
         user.save(function (error) {
             if (!error) {
                 // User saved
-                return response.send({
-                    operation: operationName,
-                    status: 'ok',
-                    error: null,
-                    data: user
-                });
+                return response.send(api.generateResponseObject(operationName, 'ok', null, user));
             }
 
             // Error on saving
-            return response.send({
-                operation: operationName,
-                status: 'error',
-                error: error,
-                data: {}
-            });
+            return response.send(api.generateResponseObject(operationName, 'error', error));
         });
     }
 
@@ -161,31 +127,16 @@ module.exports = function (app, mongoose) {
                 return data.save(function (error) {
                     if (!error) {
                         // Response when the entity has been saved
-                        return response.send({
-                            operation: operationName,
-                            status: 'ok',
-                            error: null,
-                            data: data
-                        })
+                        return response.send(api.generateResponseObject(operationName, 'ok', null, data));
                     }
 
                     // Response when saving has been fault
-                    return response.send({
-                        operation: operationName,
-                        status: 'error',
-                        error: error,
-                        data: {}
-                    });
-                })
+                    return response.send(api.generateResponseObject(operationName, 'error', error));
+                });
             }
 
             // Undefined error
-            return response.send({
-                operation: operationName,
-                status: 'error',
-                error: error,
-                data: {}
-            });
+            return response.send(api.generateResponseObject(operationName, 'error', error));
         });
     }
 
@@ -198,21 +149,11 @@ module.exports = function (app, mongoose) {
             return data.remove(function (error) {
                 if (!error) {
                     // User removed
-                    return response.send({
-                        operation: operationName,
-                        status: 'ok',
-                        error: null,
-                        data: null
-                    });
+                    return response.send(api.generateResponseObject(operationName, 'ok', null, data));
                 }
 
                 // Error on removinfg
-                return response.send({
-                    operation: operationName,
-                    status: 'error',
-                    error: error,
-                    data: null
-                });
+                return response.send(api.generateResponseObject(operationName, 'error', error));
             });
         });
     }
@@ -223,23 +164,10 @@ module.exports = function (app, mongoose) {
 
         var user = model.findById(id, function (error, data) {
             if (!error) {
-                return response.send({
-                    operation: operationName,
-                    status: 'ok',
-                    error: null,
-                    data: {
-                        baseId: id,
-                        token: generateJunkMask(id)
-                    }
-                });
+                return response.send(api.generateResponseObject(operationName, 'ok', null, { baseId: id, token: generateJunkMask(id) }));
             }
 
-            return response.send({
-                operation: operationName,
-                status: 'error',
-                error: error,
-                data: {}
-            });
+            return response.send(api.generateResponseObject(operationName, 'error', error));
         });
     }
 
@@ -250,22 +178,10 @@ module.exports = function (app, mongoose) {
 
         var user = model.findById(id, function (error, data) {
             if (!error && token == generateJunkMask(id)) {
-                return response.send({
-                    operation: operationName,
-                    status: 'ok',
-                    error: null,
-                    data: {
-                        result: true
-                    }
-                });
+                return response.send(api.generateResponseObject(operationName, 'ok', null, { result: true }));
             }
 
-            return response.send({
-                operation: operationName,
-                status: 'error',
-                error: error,
-                data: {}
-            });
+            return response.send(api.generateResponseObject(operationName, 'error', error));
         });
     }
 

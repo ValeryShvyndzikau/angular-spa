@@ -1,16 +1,24 @@
 block content
+
 body(id="app")
+
+    include ../common/header/header.jade
+
     ul(class="nav navbar-nav")
         li
-            a(ui-sref="search") Модуль: 'Search'
+            a(ui-sref="search") Module: 'Search'
         li
-            a(ui-sref="cart") Модуль: 'Cart'
+            a(ui-sref="cart") Module: 'Cart'
         li
-            a(ui-sref="tags") Модуль: 'Tags'
+            a(ui-sref="tags") Module: 'Tags'
 
-<div ui-view></div>
+    <div ui-view></div>
+
+    include ../common/footer/footer.jade
+
 block scripts
 script.
     var GLOBAL_USER_ID = '#{userId}';
+
 script(src=locals.way + '../../build/scripts/vendor.js')
 script(src=locals.way + '../../build/scripts/search.bundle.js')
