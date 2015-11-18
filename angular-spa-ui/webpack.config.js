@@ -14,7 +14,8 @@ module.exports = {
         vendor: [
             'underscore',
             'angular',
-            'angular-ui-router'
+            'angular-ui-router',
+            'bootstrap-sass!./bootstrap-sass.config.js'
         ]
     },
     output: {
@@ -23,17 +24,18 @@ module.exports = {
     },
     module: {
         loaders: [
-            {
-                test: /\.sass$/,
-                loader: ExtractTextPlugin.extract("css!sass")
-            }
+            { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,   loader: "url?limit=10000&mimetype=application/font-woff" },
+            { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,  loader: "url?limit=10000&mimetype=application/font-woff" },
+            { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,    loader: "url?limit=10000&mimetype=application/octet-stream" },
+            { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,    loader: "file" },
+            { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,    loader: "url?limit=10000&mimetype=image/svg+xml" }
         ]
     },
     plugins: [
 
         new webpack.ProvidePlugin({
-            _: 'underscore',
-            angular: 'exports?window.angular!angular'
+            _: 'underscore'
+            //angular: 'exports?window.angular!angular'
         }),
         new CommonsChunkPlugin('vendor', 'vendor.js'),
         new ExtractTextPlugin('../styles/styles.css', {

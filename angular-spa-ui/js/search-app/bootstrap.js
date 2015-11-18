@@ -1,13 +1,13 @@
 "use strict";
 
-module.exports = function(searchApp){
+module.exports = function(application, angular){
 
-    require('angular-ui-router');
-    require('./search-module');
-    require('./cart-module');
-    require('./tags-module');
+
+var cartModule = require('./cart-module')(angular);
+var searchModule = require('./search-module')(angular);
+var tagsModule = require('./tags-module')(angular);
     
-    searchApp.factory('Promises', function($q, $http){
+    application.factory('Promises', function($q, $http){
 
         function getAsyncData(method, url) {
             var deferred = $q.defer();
@@ -50,7 +50,7 @@ module.exports = function(searchApp){
         };
     });
     
-    searchApp.controller('mainCtrl', ['$scope', 'Promises',  function($scope, Promises) {                              
+    application.controller('mainCtrl', ['$scope', 'Promises',  function($scope, Promises) {                              
         // Promises requests responce
     var responsePromises    = new Array(),
         getMethod           = 'GET',
@@ -127,21 +127,6 @@ module.exports = function(searchApp){
 
 }]);
     
-    function initApp(){
-    
-    angular.element(document).ready(function () {
-        searchApp
-            .config(function ($stateProvider, $urlRouterProvider) {
-                $urlRouterProvider.otherwise('search');
-            })
-            .run();
-
-            angular.bootstrap(document, ['searchApp']);
-        });
-        
-    return searchApp;
-    };
-    
-    return initApp();
+    return application;
     
 };
