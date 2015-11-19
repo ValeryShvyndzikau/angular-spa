@@ -6,7 +6,6 @@ var app = angular.module('searchApp', [uiRouter]);
 
 var cartModule = require('./cart-module')(app);
 var searchModule = require('./search-module')(app);
-var advencedSearchModule = require('./search-module/advanced-search')(app);
 
 app
     .config(function ($stateProvider, $urlRouterProvider) {

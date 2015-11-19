@@ -1,6 +1,7 @@
 "use strict";
 
 module.exports = function(ngModule) {
+    var advencedSearchModule = require('./advanced-search')(ngModule);
 
     ngModule.config(function ($stateProvider, $urlRouterProvider) {
         $stateProvider
