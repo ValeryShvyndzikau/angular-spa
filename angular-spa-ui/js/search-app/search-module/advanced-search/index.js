@@ -4,6 +4,8 @@ module.exports = function (angular) {
 
     var advancedSearch = angular.module('app.search.advanced',[]);
     
+    var advancedSearchCtrl = require('./advanced-search-ctrl')(advancedSearch);
+    
     advancedSearch.config(configCb);
     
     function configCb($stateProvider) {

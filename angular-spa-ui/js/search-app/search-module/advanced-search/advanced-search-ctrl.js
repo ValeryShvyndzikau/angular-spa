@@ -1,5 +1,22 @@
 "use strict";
 
-module.exports = function ($scope) {
-    $scope.greeting = 'Hello! this is search advanced controller!';
+module.exports = function (advancedSearch) {
+
+    
+    advancedSearch.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items) {
+
+        $scope.items = items;
+        $scope.selected = {
+            item: $scope.items[0]
+        };
+
+        $scope.ok = function () {
+            $uibModalInstance.close($scope.selected.item);
+        };
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    });
+    
 }
