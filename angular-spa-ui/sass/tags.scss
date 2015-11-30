@@ -1,6 +1,7 @@
 .tags {
     margin: 10px 0;
-    padding: 10px 0;
+    padding: 30px 15px 20px 15px;
+    background: #fff;
 
     li {
         position: relative;
@@ -42,7 +43,7 @@
         }
     }
 
-    input { 
-        margin-bottom: 0px !important;
+    &.empty {
+        display: none !important;
     }
 }

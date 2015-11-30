@@ -1,0 +1,8 @@
+<script type="text/ng-template" id="/editTag.html">
+    <a ng-click="editTag(tag)" ng-hide="editorEnabled">Edit</a>
+    <span ng-show="editorEnabled">
+        <input ng-model="" ng-show="editorEnabled">
+        <a ng-click="save()">Save</a>
+        <a ng-click="disable Editor()">Cancel</a>
+    </span>
+</script>

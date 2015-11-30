@@ -1,4 +1,11 @@
-<script id="tagItemTemplate.html" type="text/ng-template">
-    <span class="tag" tid="{{ tag._id }}" style="color: {{ tag.textColor }}; background-color:{{ tag.backgroundColor }};" >{{tag.name}}</span>
-    ( <a ng-click="removeFriend( friend )">x</a> )
+<script type="text/ng-template" id="/tagItemTemplate.html">
+    <ul class="tags {{ isEmpty }}">
+        <li ng-repeat="tag in tags">
+            <span class="tag" ng-click="eventTag(tag)" style="color: {{ tag.textColor }}; background-color:{{ tag.backgroundColor }};">
+                <span>{{ tag.name }}</span>
+                <a class="remove-tag" ng-click="removeTagItem(tag)">x</a>
+                <tag-edit></tag-edit>
+            </span>
+        </li>
+    </ul>
 </script>
