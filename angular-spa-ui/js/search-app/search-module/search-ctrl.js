@@ -3,43 +3,7 @@
 module.exports = function ($scope, configService, $uibModal, $stateParams, $state, promises, queryParams, searchStorage, searchService, rlService) {
 
     var vm = this;
-
-    $scope.$on('goToPage', function (event, data) {
-        if (!_.isEmpty(searchStorage.objQuery))
-            searchStorage.objQuery.limits.offset = $scope.currentPage * searchStorage.objQuery.limits.limit - searchStorage.objQuery.limits.limit;
-
-        vm.model.queryParams.offset = data * vm.model.queryParams.limit - vm.model.queryParams.limit;
-        if (vm.model.queryParams.offset > 0)
-            vm.model.queryParams.offset -= 1;
-
-        privateApi.updateFilter('offset', vm.model.queryParams.offset);
-    });
-
-    $scope.$on('setSortBy', function (event, data) {
-        if (!_.isEmpty(searchStorage.objQuery))
-            searchStorage
-            .objQuery
-            .context[$scope.queryParams.searchIn]
-            .sortingOrder = $scope.sortBy.value;
-
-        privateApi.updateFilter('sortBy', data);
-    });
-
-    $scope.$on('setLimit', function (event, data) {
-        if (!_.isEmpty(searchStorage.objQuery))
-            searchStorage
-            .objQuery
-            .limits
-            .limit = $scope.limit.value;
-
-        vm.model.queryParams.offset = 0;
-        privateApi.updateFilter('limit', data);
-    });
-
-    $scope.$on('goToDetails', function (event, data) {
-        console.log('Lets go to the details!', data);
-    })
-
+    
     var privateApi = {
         setDefaultParams: function () {
             var params = {};
@@ -77,10 +41,7 @@ module.exports = function ($scope, configService, $uibModal, $stateParams, $stat
                     reload: true
                 }
             );
-        }
-    };
-
-    vm.viewApi = {
+        },
         goToDetails: function (data) {
             searchStorage.details = {
                 type: vm.model.searchIn.value,
@@ -96,7 +57,10 @@ module.exports = function ($scope, configService, $uibModal, $stateParams, $stat
                     inherit: true,
                     reload: true
                 })
-        },
+        }
+    };
+
+    vm.viewApi = {
         setSearchIn: function (val) {
             vm.model.searchIn = vm.model.searchInList[searchService.findValueId(val, vm.model.searchInList)];
             vm.model.queryParams.searchIn = vm.model.searchIn.value;
@@ -129,8 +93,47 @@ module.exports = function ($scope, configService, $uibModal, $stateParams, $stat
                 return true;
             }
             return false;
+        },
+        enterKeyPressed: function (event) {
+            event.which === 13 && vm.viewApi.find()
         }
     };
+    
+    $scope.$on('goToPage', function (event, data) {
+        if (!_.isEmpty(searchStorage.objQuery))
+            searchStorage.objQuery.limits.offset = $scope.currentPage * searchStorage.objQuery.limits.limit - searchStorage.objQuery.limits.limit;
+
+        vm.model.queryParams.offset = data * vm.model.queryParams.limit - vm.model.queryParams.limit;
+        if (vm.model.queryParams.offset > 0)
+            vm.model.queryParams.offset -= 1;
+
+        privateApi.updateFilter('offset', vm.model.queryParams.offset);
+    });
+
+    $scope.$on('setSortBy', function (event, data) {
+        if (!_.isEmpty(searchStorage.objQuery))
+            searchStorage
+            .objQuery
+            .context[$scope.queryParams.searchIn]
+            .sortingOrder = $scope.sortBy.value;
+
+        privateApi.updateFilter('sortBy', data);
+    });
+
+    $scope.$on('setLimit', function (event, data) {
+        if (!_.isEmpty(searchStorage.objQuery))
+            searchStorage
+            .objQuery
+            .limits
+            .limit = $scope.limit.value;
+
+        vm.model.queryParams.offset = 0;
+        privateApi.updateFilter('limit', data);
+    });
+
+    $scope.$on('goToDetails', function (event, data) {
+        privateApi.goToDetails(data);
+    })
 
     var config = configService.getConfig('searchConfig');
     var recordsListHeaderConfig = configService.getData('recordsListConfig', 'header');
@@ -188,6 +191,7 @@ module.exports = function ($scope, configService, $uibModal, $stateParams, $stat
                 inherit: true
             });
         }
+
         //
         //    $scope.getCurrentRequestContext = function () {
         //            var obj = {
@@ -207,4 +211,5 @@ module.exports = function ($scope, configService, $uibModal, $stateParams, $stat
         //                context: obj
         //            }
         //        }
+
 };

@@ -2,7 +2,24 @@
 
 module.exports = function($scope, $state) {
 
-    // Implementation controller of 'module tags'
-    $scope.pageTitle = $state.current.data.pageTitle;
+    var vm = this;
 
+    /**
+     * Initializing functions
+     */
+    var init = function() {
+        vm.model = model;
+    };
+
+    /**
+     * Creating model as object and installing default setting.
+     */
+    var model = {
+        pageTitle: $state.current.data.pageTitle,
+    };
+
+    /**
+     * Starts controller
+     */
+    init();
 };

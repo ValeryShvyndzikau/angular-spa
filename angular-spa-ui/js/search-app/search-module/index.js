@@ -12,7 +12,8 @@ module.exports = function (angular) {
     var searchDetailsCtrl = require('./searchDetails-ctrl');
     var searchService = require('./searchService-srv');
 
-    search.config(configCb)
+    search
+        .config(configCb)
         .constant('searchConfig', require('./search-config'))
         .controller('searchCtrl', searchCtrl)
         .controller('searchDetailsCtrl', searchDetailsCtrl)

@@ -24,5 +24,6 @@
   "scripts": {
     "dev": "set NODE_ENV=development&& webpack",
     "prod": "webpack"
-  }
+  },
+  "devDependencies": {}
 }

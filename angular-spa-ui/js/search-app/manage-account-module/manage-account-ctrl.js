@@ -1,59 +1,77 @@
 'use strict';
 
-module.exports = function($scope, $state, accountService, appLocalStorage) {
+module.exports = function($scope, $state, accountService, appLocalStorage/*, promises*/) {
 
-    console.log(this);
-    console.log(arguments);
+    /**
+     * Create main a variable for the current object
+     */
+    var vm = this;
 
+    var priveteAPI = {
 
-    var _optionsAPI = {
-
-        isShowForm: true,
-        isHideForm: false,
-
+        /**
+         * Function parse the user data of array
+         * Get firstName
+         * Get lastName
+         */
         getUserNameParam: function(userData) {
-            var splitData = userData.split(' ');
-            splitData = _.without(splitData, '');
+            var trimUserData = userData.trim();
+            var arrUserData = trimUserData.split(' ');
+            var processedArrUserData = _.without(arrUserData, '');
 
-            if (splitData.length === 2) {
-                model.userNameParam.firstName = splitData[0];
-                model.userNameParam.lastName = splitData[1];
+            if (processedArrUserData.length === 2) {
+                vm.model.userNameParam.firstName = processedArrUserData[0].trim(); 
+                vm.model.userNameParam.lastName = (_.without(processedArrUserData, processedArrUserData[0])).join(' ').trim();
             } else {
-                model.userNameParam.firstName = userData;
-                model.userNameParam.lastName = '';
+                vm.model.userNameParam.firstName = trimUserData;
+                vm.model.userNameParam.lastName = '';
             }
         },
 
+        /**
+         * Function API - get user by Id
+         * Function prepered
+         * That function is not used
+         */
         getUserById: function(userId) {
             accountService.getUserById(userId)
                 .then(
                     function(userData) {
-                        _optionsAPI.updateUserData(userData.data);
+                        priveteAPI.updateUserData(userData.data);
                     },
                     function(errorMessage) {
-                        this.errorMessage(errorMessage);
+                        priveteAPI.errorMessage(errorMessage);
                     }
                 );
         },
 
-        updateUserData: function(userData) {
-            // Prepare functionality for update localstorage...
+        /**
+         * Function API update for data localstorage
+         */
+        updateUserData: function(userName) {
+            var userData = appLocalStorage.getItem('userData');
+            userData.userName = userName;
+            appLocalStorage.setItem('userData', userData);
         },
 
+        /**
+         * Function API of update information - user email.
+         */
         updateUserName: function(userId, userName) {
             accountService.updateUserName(userId, userName)
                 .then(
                     function(result) {
-                        var userData = appLocalStorage.getItem('userData');
-                        userData.userName = userName;
-                        appLocalStorage.setItem('userData', userData);
+                        priveteAPI.updateUserData(result.data.name);
                     },
                     function(errorMessage) {
-                        this.errorMessage(errorMessage);
+                        priveteAPI.errorMessage(errorMessage);
                     }
                 );
         },
 
+        /**
+         * Function API of update information - user email.
+         */
         updateUserEmail: function(userId, userEmail) {
             accountService.updateUserEmail(userId, userEmail)
                 .then(
@@ -63,26 +81,31 @@ module.exports = function($scope, $state, accountService, appLocalStorage) {
                         appLocalStorage.setItem('userData', userData);
                     },
                     function(errorMessage) {
-                        this.errorMessage(errorMessage);
+                        priveteAPI.errorMessage(errorMessage);
                     }
                 );
         },
 
+        /**
+         * The function to display information in warning
+         */
         errorMessage: function(errorMsg) {
             console.warn(errorMsg);
         }
 
     };
 
-    var initialize = function() {
-        console.log(this)
-
-        $scope.model = model;
-        $scope.viewAPI = viewAPI;
+    /**
+     * Initializing functions
+     */
+    var init = function() {
+        vm.model = model;
+        vm.viewAPI = viewAPI;
     };
 
-
-    // The model of the current scope
+    /**
+     * Creating model as object and installing default setting.
+     */
     var model = {
         pageTitle: $state.current.data.pageTitle,
         userData: appLocalStorage.getItem('userData'),
@@ -90,58 +113,99 @@ module.exports = function($scope, $state, accountService, appLocalStorage) {
             firstName: '',
             lastName: ''
         },
-        userEmailNew: '',
+        inptUserEmail: document.getElementById("inpt-user-email"),
         isVisibilityFormUserName: true,
         isVisibilityFormUserEmail: true,
     };
 
-    // Action on the view (Events)
+    /**
+     * Object contains the functions 
+     * that provide actions for the elements in the DOM.
+     */
     var viewAPI = {
 
+        /**
+         * Event on UI - edit
+         * The function to change the user Name
+         */
         editUserName: function() {
-
-console.log(this)
-console.log($scope)
-
-            _optionsAPI.getUserNameParam(model.userData.userName);
-            return model.isVisibilityFormUserName = _optionsAPI.isHideForm;
+            priveteAPI.getUserNameParam(vm.model.userData.userName);
+            return vm.model.isVisibilityFormUserName = !vm.model.isVisibilityFormUserName;
         },
+
+        /**
+         * Event on UI - cancel
+         * Function to cancel the change by user Name
+         * Return form is default state
+         */
         btnCancelUserName: function() {
-            return model.isVisibilityFormUserName = _optionsAPI.isShowForm;
+            return vm.model.isVisibilityFormUserName = !vm.model.isVisibilityFormUserName;
         },
+
+        /**
+         * Event on UI - save
+         * Function to save the change by user Name
+         */
         btnSaveUserName: function() {
-            if (!_.isEmpty(model.userNameParam.firstName) || !_.isEmpty(model.userNameParam.lastName)) {
-                model.userData.userName = _.values(model.userNameParam).join(' ');
-                _optionsAPI.updateUserName(model.userData.userId, model.userData.userName);
-                this.btnCancelUserName();
+            var isEmptyUserFirstName = _.isEmpty(vm.model.userNameParam.firstName);
+            var isEmptyUserLastName = _.isEmpty(vm.model.userNameParam.lastName);
+
+            if (!isEmptyUserFirstName || !isEmptyUserLastName) {
+                vm.model.userData.userName = _.values(vm.model.userNameParam).join(' ');
+                priveteAPI.updateUserName(vm.model.userData.userId, vm.model.userData.userName);
+                vm.viewAPI.btnCancelUserName();
             } else {
-                _optionsAPI.errorMessage('is not allowed');
+                priveteAPI.errorMessage('is not allowed');
             }
         },
 
+        /**
+         * Event on UI - edit
+         * The function to change the user's email
+         */
         editUserEmail: function() {
-            model.userEmailNew = model.userData.userEmail;
-            return model.isVisibilityFormUserEmail = _optionsAPI.isHideForm;
-        },
-        btnCancelUserEmail: function() {
-            return model.isVisibilityFormUserEmail = _optionsAPI.isShowForm;
-        },
-        btnSaveUserEmail: function() {
-            if (!_.isEmpty(model.userEmailNew)) {
-                model.userData.userEmail = model.userEmailNew;
-                _optionsAPI.updateUserEmail(model.userData.userId, model.userData.userEmail);
-                this.btnCancelUserEmail();
-            } else {
-                _optionsAPI.errorMessage('is not allowed');
-            }
+            vm.model.inptUserEmail.removeAttribute("disabled");
+            return vm.model.isVisibilityFormUserEmail = !vm.model.isVisibilityFormUserEmail;
         },
 
+        /**
+         * Event on UI - cancel
+         * Function to cancel the change by email
+         */
+        btnCancelUserEmail: function() {
+            vm.model.inptUserEmail.setAttribute('disabled','disabled');
+            return vm.model.isVisibilityFormUserEmail = !vm.model.isVisibilityFormUserEmail;
+        },
+
+        /**
+         * Event on UI - save
+         * Function to save the change by email
+         */
+        btnSaveUserEmail: function() {
+            var isEmptyInptUserEmail = _.isEmpty(vm.model.inptUserEmail.value.trim());
+            var isEqualEmail = (vm.model.inptUserEmail.value === vm.model.userData.userEmail);
+            if (!isEmptyInptUserEmail && !isEqualEmail) {
+                priveteAPI.updateUserEmail(vm.model.userData.userId, vm.model.inptUserEmail.value);
+                vm.model.userData.userEmail = vm.model.inptUserEmail.value;
+            } else {
+                priveteAPI.errorMessage('Is not allowed');
+            }
+            vm.viewAPI.btnCancelUserEmail();
+        },
+
+        /**
+         * Event on UI - reset password
+         * The function to reset the password
+         */
         resetPassword: function() {
-            _optionsAPI.errorMessage('is not allowed');
+            priveteAPI.errorMessage('is not allowed');
         }
 
     };
 
-    initialize();
+    /**
+     * Starts controller
+     */
+    init();
 
 };

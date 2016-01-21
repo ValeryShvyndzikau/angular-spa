@@ -9,7 +9,8 @@ module.exports = function($stateProvider) {
             views: {
                 'module-content': {
                     templateUrl: '/accountModulePageTemplate.html',
-                    controller: 'accountController'
+                    controller: 'accountController',
+                    controllerAs: 'accountCtrl'
                 }
             },
             data: {

@@ -3,7 +3,7 @@
 
         <div class="row">
             <div class="col-xm-12 col-sm-12 col-md-12 col-lg-12">
-                <h2>{{ model.pageTitle }}</h2>
+                <h2>{{ accountCtrl.model.pageTitle }}</h2>
             </div>
         </div>
 
@@ -12,92 +12,77 @@
                 <div>
                     <div class="manage-account-wrap">
 
-                        <div class="top-panele-ma panele-ma">Manage Account Setting</div>
+                        <div class="top-panele-ma panele-ma grad-header-table">Manage Account Setting</div>
                         <div class="left-panele-ma panele-ma">
                             <ul>
                                 <li>
-                                    <a>Name, email address & password</a>
+                                    <a href="">Name, email address & password</a>
                                 </li>
                                 <li>
-                                    <a>Email notification</a>
+                                    <a href="">Email notification</a>
                                 </li>
                             </ul>
                         </div>
                         <div class="right-panele-ma panele-ma">
-
-
-
 
                             <div class="block-one block-item">
 
                                 <div class="block-inline">
                                     <div>
                                         <p>Your name:</p>
-                                        <p ng-show="model.isVisibilityFormUserName">
-                                            <span ng-model="model" class="user-name">{{ model.userData.userName }}</span>
+                                        <p ng-show="accountCtrl.model.isVisibilityFormUserName">
+                                            <span ng-model="model" class="user-name">{{ accountCtrl.model.userData.userName }}</span>
                                         </p>
-                                        <p ng-hide="model.isVisibilityFormUserName">
-                                            <input ng-model="model.userNameParam.firstName">
-                                            <input ng-model="model.userNameParam.lastName">
+                                        <p ng-hide="accountCtrl.model.isVisibilityFormUserName">
+                                            <input ng-model="accountCtrl.model.userNameParam.firstName">
+                                            <input ng-model="accountCtrl.model.userNameParam.lastName">
                                         </p>
                                     </div>
                                 </div>
 
                                 <div class="block-inline">
-                                    <div class="fright" ng-show="model.isVisibilityFormUserName">
-                                        <a ng-click="viewAPI.editUserName()">Edit</a>
+                                    <div class="fright" ng-show="accountCtrl.model.isVisibilityFormUserName">
+                                        <button type="button" class="btn btn-primary" ng-click="accountCtrl.viewAPI.editUserName()">Edit</button>
                                     </div>
-                                    <div class="fright" ng-hide="model.isVisibilityFormUserName">
-                                        <a ng-click="viewAPI.btnCancelUserName()">Cancel</a>
-                                        <a ng-click="viewAPI.btnSaveUserName()">Save</a>
+                                    <div class="fright" ng-hide="accountCtrl.model.isVisibilityFormUserName">
+                                        <button type="button" class="btn btn-danger" ng-click="accountCtrl.viewAPI.btnCancelUserName()">Cancel</button>
+                                        <button type="button" class="btn btn-success" ng-click="accountCtrl.viewAPI.btnSaveUserName()">Save</button>
                                     </div>
                                 </div>
 
                             </div>
-
-
 
                             <div class="block-two block-item">
 
                                 <div class="block-inline">
                                     <p>Your user name and primary email address:</p>
-                                    <p ng-show="model.isVisibilityFormUserEmail">
-                                        <span>{{ model.userData.userEmail }}</span>
-                                    </p>
-                                    <p ng-hide="model.isVisibilityFormUserEmail">
-                                        <input ng-model="model.userEmailNew">
+                                    <p>
+                                        <input type="text" id="inpt-user-email" disabled="disabled" value="{{ accountCtrl.model.userData.userEmail }}"/>
                                     </p>
                                 </div>
 
                                 <div class="block-inline">
-                                    <div class="fright" ng-show="model.isVisibilityFormUserEmail">
-                                        <a class="edit" ng-click="viewAPI.editUserEmail()">Edit</a>
+                                    <div class="fright" ng-show="accountCtrl.model.isVisibilityFormUserEmail">
+                                        <button type="button" class="btn btn-primary" ng-click="accountCtrl.viewAPI.editUserEmail()">Edit</button>
                                     </div>
-                                    <div class="fright" ng-hide="model.isVisibilityFormUserEmail">
-                                        <a ng-click="viewAPI.btnCancelUserEmail()">Cancel</a>
-                                        <a ng-click="viewAPI.btnSaveUserEmail()">Save</a>
+                                    <div class="fright" ng-hide="accountCtrl.model.isVisibilityFormUserEmail">
+                                        <button type="button" class="btn btn-danger" ng-click="accountCtrl.viewAPI.btnCancelUserEmail()">Cancel</button>
+                                        <button type="button" class="btn btn-success" ng-click="accountCtrl.viewAPI.btnSaveUserEmail()">Save</button>
                                     </div>
                                 </div>
 
                             </div>
-
-
-
 
                             <div class="block-tree block-item">
                                    <div class="block-inline">
-                                    <a ng-click="viewAPI.resetPassword()">Reset password</a>
+                                    <button type="button" class="btn btn-warning" ng-click="accountCtrl.viewAPI.resetPassword()">Reset password</button>
                                 </div>
                             </div>
-
-
-
 
                         </div>
 
                     </div>
                 </div>
-
 
             </div>
         </div>
