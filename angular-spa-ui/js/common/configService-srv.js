@@ -1,46 +1,41 @@
 module.exports = function ($injector) {
 
-    var getConfig = function (configName) {
+    return {
+        getData: function (configName, keysPath) {
 
-        try {
-            return angular.copy($injector.get(configName));
-        } catch (err) {
-            throw Error('Can not get config ' + configName);
-        }
-
-    };
-
-    var getData = function (configName, keysPath) {
-
-        var config = getConfig(configName),
-            keysPathArray = keysPath.split('.'),
-            lastKeyIndex = keysPathArray.length - 1;
-        if (!keysPathArray.length && !_.isEmpty(config)) {
-            return false;
-        }
-
-        var obj = config;
-
-        for (var index in keysPathArray) {
-            var data = keysPathArray[index];
-            if (!_.has(obj, data)) {
-                console.warn('Element \'' + keysPath + '\' not found in ' + configName);
-                obj = false;
-
+            var config = this.getConfig(configName);
+            var keysPathArray = keysPath.split('.');
+            var lastKeyIndex = keysPathArray.length - 1;
+            
+            if (!keysPathArray.length && !_.isEmpty(config)) {
                 return false;
             }
-            obj = obj[data];
 
-            if (index == lastKeyIndex) {
-                return angular.copy(obj);
+            var obj = config;
+            _.each(keysPathArray, function(key, index,array){
+                if (!_.has(obj, key)) {
+                    console.warn('Element \'' + keysPath + '\' not found in ' + configName);
+                    obj = false;
+
+                    return false;
+                }
+                obj = obj[key];
+
+                if (index == lastKeyIndex) {
+                    return angular.copy(obj);
+                }
+            })
+
+            return angular.copy(obj);
+        },
+        getConfig: function (configName) {
+
+            try {
+                return angular.copy($injector.get(configName));
+            } catch (err) {
+                throw Error('Can not get config ' + configName);
             }
+
         }
-
-        return angular.copy(obj);
-    };
-
-    return {
-        getData: getData,
-        getConfig: getConfig
     }
 };

@@ -100,21 +100,22 @@ module.exports = function (configService) {
                 resultsPerPage: configService.getData('recordsListConfig', 'resultsPerPage'),
                 itemConfig: configService.getData('recordsListConfig', 'itemConfig'),
             }
-
+            
             return model;
         },
         setHeaderConfig: function (data, config, stateParams) {
+            
             var params = {
                 resultsCount: this.setResultsCount(config.params.resultsCount, data),
                 sortBy: this.setSortBy(config.params.sortBy, stateParams.sortBy),
                 resultsPerPage: this.setResultsPerPage(config.params.resultsPerPage, stateParams.limit),
                 pagination: this.setPagination(config.params.pagination, data)
             }
-
+            
             _.extend(config.params, params);
 
             config = this.setVisibility(defaultHeaderParams, config.params, config);
-
+            
             return config;
         },
         setResultsCount: function (config, data) {
@@ -210,7 +211,7 @@ module.exports = function (configService) {
             return config;
         },
         setVisibility: function (defaultParams, params, config) {
-
+            
             if (!_.isEqual(defaultParams, params)) {
                 config.visibility = true;
             }

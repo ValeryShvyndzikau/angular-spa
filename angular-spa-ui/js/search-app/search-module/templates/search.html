@@ -11,7 +11,7 @@
             </div>
             <div class="colRightPanel">
                 <div class="search">
-                    <input type="text" value="" ng-model='search.model.query' />
+                    <input autofocus type="text" value="" ng-model='search.model.query' ng-keydown="search.viewApi.enterKeyPressed($event)"/>
                     <a class="searchButton" ng-click="search.viewApi.find()">
                         <img ng-src="/img/search-button.png">
                     </a>
@@ -25,7 +25,7 @@
     <records-list
                   header-settings='search.model.headerConfig'
                   items-settings='search.model.itemConfig'
-                  itemslist='search.model.itemsList'
-                  ng-model='search.model.itemsList'>
+                  items-List='search.model.itemsList'
+                  ng-model='search.model'>
     </records-list>
 </script>

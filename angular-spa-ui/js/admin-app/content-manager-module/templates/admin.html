@@ -1,31 +1,26 @@
 <script type="text/ng-template" id="/admin.html">
-        <div class="search-panel">
-            <div class="wrapper">
-                <div class="return-results">
-                    <div ng-click="back()"> > Return to results</div>
-            </div>
-            </div>
-        </div>
+    <div class="search-panel">
         <div class="wrapper">
-            <div class="article-details">
-                <h2 ng-click='test()'>ADMIN PORTAL</h2>
-                    <div style="display:inline-block">
-                        <p ng-repeat='tab in tabs'
-                           ng-click="changeTab(tab.value)"
-                           style="float:left;margin:20px"
-                           ng-hide="tab.disabled"
-                           >{{tab.title}}</p>
-                    </div>
-                    <records-list
-                                  header-settings = 'headerConfig'
-                                  items-settings = 'itemConfig'
-                                  itemslist = 'itemsList'
-                                  ng-model = 'itemsList'
-                                  >
-                    </records-list>
+            <div class="return-results">
+                <div ng-click="back()"> > Return to results</div>
             </div>
         </div>
-<!--
+    </div>
+    <div class="wrapper">
+        <div class="article-details">
+            <h2>ADMIN PORTAL</h2>
+            <div style="display:inline-block">
+                <p ng-repeat='tab in contentManager.model.sections' ng-click="contentManager.viewApi.changeTab(tab.value)" style="float:left;margin:20px" ng-hide="tab.disabled" ng-class="{'btn-success': tab.active }" class="btn">{{tab.title}}</p>
+            </div>
+            <records-list
+                          header-settings='contentManager.model.headerConfig' 
+                          items-settings='contentManager.model.itemConfig' 
+                          items-list='contentManager.model.itemsList' 
+                          ng-model='contentManager.model'>
+            </records-list>
+        </div>
+    </div>
+    <!--
 
 -->
 </script>
